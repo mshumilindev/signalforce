@@ -16,7 +16,7 @@ export function DashboardShortcuts() {
       <div className="shortcut-grid">
         {shortcuts.map((route) => (
           <NavLink key={route.id} to={route.path} className="shortcut-card">
-            {t(`dashboard.shortcuts.${route.id}`)}
+            {t(route.labelKey)}
           </NavLink>
         ))}
       </div>

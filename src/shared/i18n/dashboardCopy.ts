@@ -40,9 +40,6 @@ export const dashboardCopyEn = {
   },
   shortcuts: {
     title: 'Shortcuts',
-    history: 'Digest history',
-    saved: 'Saved items',
-    terms: 'Terms',
   },
   errors: {
     loadFailed: 'We could not load your dashboard. Check your connection and try again.',
@@ -101,9 +98,6 @@ export const dashboardCopyPl = {
   },
   shortcuts: {
     title: 'Skroty',
-    history: 'Historia digestow',
-    saved: 'Zapisane',
-    terms: 'Terminy',
   },
   errors: {
     loadFailed: 'Nie udalo sie zaladowac panelu. Sprawdz polaczenie i sprobuj ponownie.',
@@ -162,9 +156,6 @@ export const dashboardCopyUk = {
   },
   shortcuts: {
     title: 'Швидкі посилання',
-    history: 'Історія дайджестів',
-    saved: 'Збережене',
-    terms: 'Терміни',
   },
   errors: {
     loadFailed: 'Не вдалося завантажити панель. Перевірте зʼєднання та спробуйте ще раз.',
