@@ -64,6 +64,9 @@ function mapItems(data: unknown): DigestItem[] {
     const sourceLabel = record.sourceLabel;
     const citationUrl = record.citationUrl;
     const addedAt = record.addedAt;
+    const synopsis = record.synopsis;
+    const imageUrl = record.imageUrl;
+    const imageAlt = record.imageAlt;
 
     if (
       typeof id !== 'string' ||
@@ -84,6 +87,15 @@ function mapItems(data: unknown): DigestItem[] {
         sourceLabel,
         citationUrl,
         addedAt,
+        ...(typeof synopsis === 'string' && synopsis.trim().length > 0
+          ? { synopsis: synopsis.trim() }
+          : {}),
+        ...(typeof imageUrl === 'string' && imageUrl.trim().length > 0
+          ? { imageUrl: imageUrl.trim() }
+          : {}),
+        ...(typeof imageAlt === 'string' && imageAlt.trim().length > 0
+          ? { imageAlt: imageAlt.trim() }
+          : {}),
       },
     ];
   });

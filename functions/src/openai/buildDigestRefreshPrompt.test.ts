@@ -63,6 +63,8 @@ describe('buildDigestRefreshPrompt', () => {
     });
 
     expect(system).toContain('Update an existing digest in place');
+    expect(system).toContain('itemSynopses must include one object for every digest item after refresh');
+    expect(system).toContain('itemVisuals must include one object for every digest item after refresh');
     expect(user).toContain('Existing summary');
     expect(user).toContain('Newly appended source items');
     expect(user).toContain('New item');

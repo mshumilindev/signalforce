@@ -19,10 +19,23 @@ export const digestTermOfDaySchema = z.object({
   explanation: nonEmptyString,
 });
 
+export const digestItemSynopsisSchema = z.object({
+  itemId: nonEmptyString,
+  synopsis: nonEmptyString.max(220),
+});
+
+export const digestItemVisualSchema = z.object({
+  itemId: nonEmptyString,
+  imageAlt: nonEmptyString.max(160),
+  imageSearchQuery: nonEmptyString.max(160),
+});
+
 export const digestContentSchema = z.object({
   summary: nonEmptyString,
   sections: digestSectionsSchema,
-  termOfDay: digestTermOfDaySchema.nullable(),
+  itemSynopses: z.array(digestItemSynopsisSchema).min(1),
+  itemVisuals: z.array(digestItemVisualSchema).min(1),
+  termOfDay: digestTermOfDaySchema,
   reflectionPrompt: nonEmptyString,
 });
 

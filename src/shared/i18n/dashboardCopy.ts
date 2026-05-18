@@ -41,6 +41,11 @@ export const dashboardCopyEn = {
   shortcuts: {
     title: 'Shortcuts',
   },
+  term: {
+    eyebrow: 'Term',
+    title: 'Term of the day',
+    empty: 'The next generated digest will include a term of the day.',
+  },
   errors: {
     loadFailed: 'We could not load your dashboard. Check your connection and try again.',
     actionFailed: 'Digest action failed. Try again in a moment.',
@@ -48,6 +53,9 @@ export const dashboardCopyEn = {
     unauthenticated: 'Sign in again to run digest actions.',
     preconditionFailed: 'This digest action cannot run in the current state.',
     permissionDenied: 'You do not have permission to run this digest action.',
+    noSourceItems:
+      'No signals matched your focus areas. Add interests in Settings or try again later.',
+    openAiNotConfigured: 'Digest generation is not configured on the server. Contact support.',
   },
   feedback: {
     refreshed: 'Digest refreshed in place.',
@@ -99,6 +107,11 @@ export const dashboardCopyPl = {
   shortcuts: {
     title: 'Skroty',
   },
+  term: {
+    eyebrow: 'Termin',
+    title: 'Termin dnia',
+    empty: 'Nastepny wygenerowany digest bedzie zawieral termin dnia.',
+  },
   errors: {
     loadFailed: 'Nie udalo sie zaladowac panelu. Sprawdz polaczenie i sprobuj ponownie.',
     actionFailed: 'Akcja digestu nie powiodla sie. Sprobuj ponownie za chwile.',
@@ -106,6 +119,9 @@ export const dashboardCopyPl = {
     unauthenticated: 'Zaloguj sie ponownie, aby uruchomic akcje digestu.',
     preconditionFailed: 'Tej akcji digestu nie mozna wykonac w obecnym stanie.',
     permissionDenied: 'Nie masz uprawnien do wykonania tej akcji digestu.',
+    noSourceItems:
+      'Brak sygnalow dla wybranych obszarow. Dodaj zainteresowania w Ustawieniach lub sprobuj pozniej.',
+    openAiNotConfigured: 'Generowanie digestu nie jest skonfigurowane na serwerze. Skontaktuj sie z supportem.',
   },
   feedback: {
     refreshed: 'Digest odswiezony na miejscu.',
@@ -157,6 +173,11 @@ export const dashboardCopyUk = {
   shortcuts: {
     title: 'Швидкі посилання',
   },
+  term: {
+    eyebrow: 'Термін',
+    title: 'Термін дня',
+    empty: 'Наступний згенерований дайджест міститиме термін дня.',
+  },
   errors: {
     loadFailed: 'Не вдалося завантажити панель. Перевірте зʼєднання та спробуйте ще раз.',
     actionFailed: 'Дію з дайджестом не виконано. Спробуйте ще раз незабаром.',
@@ -164,6 +185,9 @@ export const dashboardCopyUk = {
     unauthenticated: 'Увійдіть знову, щоб виконати дії з дайджестом.',
     preconditionFailed: 'Цю дію з дайджестом неможливо виконати в поточному стані.',
     permissionDenied: 'У вас немає дозволу на виконання цієї дії з дайджестом.',
+    noSourceItems:
+      'Немає сигналів для ваших тем. Додайте інтереси в Налаштуваннях або спробуйте пізніше.',
+    openAiNotConfigured: 'Генерацію дайджесту не налаштовано на сервері. Зверніться до підтримки.',
   },
   feedback: {
     refreshed: 'Дайджест оновлено на місці.',

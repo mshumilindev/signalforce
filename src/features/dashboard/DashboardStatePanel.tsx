@@ -30,6 +30,11 @@ export function DashboardStatePanel({ viewState, errorKey, onRetry }: DashboardS
       <div className="dashboard-state dashboard-state-empty">
         <h2>{t('dashboard.states.emptyTitle')}</h2>
         <p>{t('dashboard.states.emptyDescription')}</p>
+        {errorKey ? (
+          <p className="dashboard-state-inline-error" role="alert">
+            {t(errorKey)}
+          </p>
+        ) : null}
       </div>
     );
   }

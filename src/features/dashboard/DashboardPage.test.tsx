@@ -85,7 +85,10 @@ describe('DashboardPage', () => {
             recommendedAction: '',
           },
           items: [],
-          termOfDay: null,
+          termOfDay: {
+            term: 'Server Components',
+            explanation: 'UI rendered on the server before streaming to the browser.',
+          },
           reflectionPrompt: '',
           refreshHistory: [{ at: '2026-05-18T10:00:00.000Z', type: 'created' }],
         },
@@ -96,6 +99,8 @@ describe('DashboardPage', () => {
     renderDashboard();
 
     expect(screen.getByRole('heading', { name: 'Latest digest' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Term of the day' })).toBeVisible();
+    expect(screen.getByText(/Server Components/)).toBeVisible();
     expect(screen.getByText('Active period')).toBeVisible();
     expect(screen.getByRole('link', { name: 'Open digest' })).toHaveAttribute('href', '/digests/digest-1');
   });

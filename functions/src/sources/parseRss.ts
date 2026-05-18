@@ -5,6 +5,7 @@ interface ParsedFeedItem {
   readonly citationUrl: string;
   readonly publishedAt: string | null;
   readonly externalId: string;
+  readonly imageUrl: string | null;
 }
 
 function parsePublishedAt(value: string | null): string | null {
@@ -52,6 +53,24 @@ function readAtomLink(block: string): string | null {
   return hrefOnly?.[1] ?? null;
 }
 
+function readAttribute(block: string, tagName: string, attributeName: string): string | null {
+  const tag = block.match(new RegExp(`<${tagName}[^>]*>`, 'i'))?.[0];
+  if (!tag) {
+    return null;
+  }
+
+  const attribute = tag.match(new RegExp(`${attributeName}=["']([^"']+)["']`, 'i'));
+  return attribute?.[1] ?? null;
+}
+
+function readImageUrl(block: string): string | null {
+  return (
+    readAttribute(block, 'media:content', 'url') ??
+    readAttribute(block, 'media:thumbnail', 'url') ??
+    readAttribute(block, 'enclosure', 'url')
+  );
+}
+
 function parseRssItems(xml: string): ParsedFeedItem[] {
   const blocks = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)];
 
@@ -61,6 +80,7 @@ function parseRssItems(xml: string): ParsedFeedItem[] {
     const citationUrl = readTag(block, ['link', 'guid']) ?? readAtomLink(block);
     const publishedAt = readTag(block, ['pubDate', 'published', 'updated', 'dc:date']);
     const externalId = readTag(block, ['guid', 'id']) ?? citationUrl;
+    const imageUrl = readImageUrl(block);
 
     if (!title || !citationUrl || !externalId) {
       return [];
@@ -72,6 +92,7 @@ function parseRssItems(xml: string): ParsedFeedItem[] {
         citationUrl,
         publishedAt: parsePublishedAt(publishedAt),
         externalId,
+        imageUrl,
       },
     ];
   });
@@ -86,6 +107,7 @@ function parseAtomEntries(xml: string): ParsedFeedItem[] {
     const citationUrl = readAtomLink(block) ?? readTag(block, ['id']);
     const publishedAt = readTag(block, ['published', 'updated']);
     const externalId = readTag(block, ['id']) ?? citationUrl;
+    const imageUrl = readImageUrl(block);
 
     if (!title || !citationUrl || !externalId) {
       return [];
@@ -97,6 +119,7 @@ function parseAtomEntries(xml: string): ParsedFeedItem[] {
         citationUrl,
         publishedAt: parsePublishedAt(publishedAt),
         externalId,
+        imageUrl,
       },
     ];
   });
@@ -117,5 +140,6 @@ export function parseRssFeedXml(
     citationUrl: entry.citationUrl,
     publishedAt: entry.publishedAt,
     externalId: entry.externalId,
+    ...(entry.imageUrl ? { imageUrl: entry.imageUrl } : {}),
   }));
 }

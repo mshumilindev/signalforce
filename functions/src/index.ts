@@ -8,19 +8,25 @@ import {
   refreshDigestForUser,
 } from './digest/digestLifecycleService.js';
 import { parseUserPreferences } from './preferences/validateUserPreferences.js';
+import { defaultUserPreferences } from './preferences/defaultPreferences.js';
 import { getUserRecord } from './users/repository.js';
 import { openAiApiKeySecret } from './openai/secrets.js';
 import { processScheduledDigests } from './scheduler/processScheduledDigests.js';
+import { checkSourcePreviewAvailability } from './sources/previewAvailability.js';
 import './firebaseAdmin.js';
 
 const region = 'europe-west1';
-const callableOptions = { region, secrets: [openAiApiKeySecret] };
+const callableOptions = {
+  region,
+  secrets: [openAiApiKeySecret],
+  timeoutSeconds: 120,
+};
 
 async function requireUserPreferences(uid: string) {
   const user = await getUserRecord(uid);
 
   if (!user?.preferences) {
-    throw new HttpsError('failed-precondition', 'User preferences are not configured.');
+    return defaultUserPreferences;
   }
 
   try {
@@ -64,6 +70,17 @@ export const forceUpdateDigest = onCall(callableOptions, async (request) => {
     type: 'forceUpdate',
     operation: () => forceUpdateDigestForUser(uid, preferences, referenceDate),
   });
+});
+
+export const checkSourcePreview = onCall({ region, timeoutSeconds: 30 }, async (request) => {
+  requireAuthUid(request);
+
+  const url = request.data?.url;
+  if (typeof url !== 'string') {
+    throw new HttpsError('invalid-argument', 'Source URL is required.');
+  }
+
+  return checkSourcePreviewAvailability(url);
 });
 
 export const scheduledDigestGeneration = onSchedule(

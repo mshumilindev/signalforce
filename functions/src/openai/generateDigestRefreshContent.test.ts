@@ -75,7 +75,7 @@ function createMockClient(content: string): OpenAI {
 }
 
 describe('enrichRefreshedDigestContent', () => {
-  it('updates summary while preserving digest identity and items', async () => {
+  it('updates summary while preserving digest identity and enriching matched items', async () => {
     const client = createMockClient(validFixture);
 
     const enriched = await enrichRefreshedDigestContent({
@@ -89,7 +89,40 @@ describe('enrichRefreshedDigestContent', () => {
     expect(enriched.id).toBe('digest-1');
     expect(enriched.generatedAt).toBe(digest.generatedAt);
     expect(enriched.expiresAt).toBe(digest.expiresAt);
-    expect(enriched.items).toEqual(digest.items);
+    expect(enriched.items[0]?.id).toBe('item-1');
+    expect(enriched.items[0]?.synopsis).toContain('React platform');
+    expect(enriched.items[0]?.imageAlt).toBe('React platform architecture visual');
+    expect(enriched.items[1]?.id).toBe('item-2');
     expect(enriched.summary).toContain('React');
+  });
+
+  it('falls back when refresh JSON validates incorrectly during enrichment', async () => {
+    const client = createMockClient(
+      JSON.stringify({
+        summary: 'Incomplete refresh',
+        sections: {
+          executiveSummary: 'Executive',
+          topSignals: ['Signal'],
+          signalVsNoise: [],
+          leadershipImplications: [],
+          aiOrchestrationImplications: [],
+          frontendArchitectureImplications: [],
+          recommendedAction: 'Act',
+        },
+        termOfDay: { term: 'Signal', explanation: 'A source-backed update.' },
+        reflectionPrompt: 'Reflect',
+      }),
+    );
+
+    const enriched = await enrichRefreshedDigestContent({
+      preferences,
+      digest,
+      newItems: [newItem],
+      client,
+      apiKey: 'test-key',
+    });
+
+    expect(enriched.summary).toContain('Source-backed digest prepared');
+    expect(enriched.items[1]?.synopsis).toContain('New');
   });
 });

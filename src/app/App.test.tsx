@@ -3,7 +3,8 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { App } from '@/app/App';
-import { createMockAuthValue, MockAuthProvider } from '@/test/MockAuthProvider';
+import { MockAuthProvider } from '@/test/MockAuthProvider';
+import { createMockAuthValue } from '@/test/mockAuthValue';
 
 function renderApp(initialPath: string, authValue = createMockAuthValue()) {
   return render(

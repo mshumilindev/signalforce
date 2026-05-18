@@ -13,6 +13,7 @@ export const staticConnector: SourceConnector = {
       citationUrl: entry.citationUrl,
       publishedAt: entry.publishedAt,
       externalId: entry.externalId,
+      ...(entry.imageUrl ? { imageUrl: entry.imageUrl } : {}),
     }));
   },
 };

@@ -1,5 +1,6 @@
 import { getConnectorForSource } from './connectors/index.js';
 import { createRssConnector } from './connectors/rssConnector.js';
+import { enrichRawItemsWithPageImages } from './pageImage.js';
 import type { FetchFn, SourceConnector, SourceDefinition, SourceFetchResult } from './types.js';
 
 function resolveConnector(source: SourceDefinition, fetchImpl?: FetchFn): SourceConnector {
@@ -19,7 +20,10 @@ async function fetchSingleSource(
   fetchImpl?: FetchFn,
 ): Promise<SourceFetchResult> {
   try {
-    const items = await resolveConnector(source, fetchImpl).fetch(source);
+    const fetchedItems = await resolveConnector(source, fetchImpl).fetch(source);
+    const items = fetchImpl
+      ? await enrichRawItemsWithPageImages(fetchedItems, fetchImpl)
+      : fetchedItems;
 
     return {
       sourceId: source.id,

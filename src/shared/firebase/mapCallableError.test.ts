@@ -15,6 +15,15 @@ describe('mapCallableErrorToTranslationKey', () => {
     expect(mapCallableErrorToTranslationKey(error)).toBe('dashboard.errors.preconditionFailed');
   });
 
+  it('maps missing source items to a dedicated message', () => {
+    const error = new FirebaseError(
+      'functions/failed-precondition',
+      'At least one source item is required for digest generation.',
+    );
+
+    expect(mapCallableErrorToTranslationKey(error)).toBe('dashboard.errors.noSourceItems');
+  });
+
   it('falls back to action failed for unknown errors', () => {
     expect(mapCallableErrorToTranslationKey(new Error('boom'))).toBe('dashboard.errors.actionFailed');
   });

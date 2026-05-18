@@ -8,6 +8,7 @@ import {
 } from 'firebase/firestore';
 import type { User } from 'firebase/auth';
 import type { UserDocument, UserProfileFields } from '@/features/auth/types';
+import { defaultUserPreferences } from '@/features/preferences/defaultPreferences';
 import { mapPreferences } from '@/features/preferences/mapPreferences';
 import { getFirestoreDb } from '@/shared/firebase/client';
 
@@ -78,16 +79,20 @@ export async function ensureUserDocument(user: User): Promise<UserDocument> {
   if (!snapshot.exists()) {
     await setDoc(reference, {
       profile,
+      preferences: defaultUserPreferences,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       latestDigestId: null,
       nextDigestDueAt: null,
     });
   } else {
+    const existingPreferences = mapPreferences(snapshot.data().preferences);
+
     await setDoc(
       reference,
       {
         profile,
+        ...(existingPreferences ? {} : { preferences: defaultUserPreferences }),
         updatedAt: serverTimestamp(),
       },
       { merge: true },

@@ -10,7 +10,7 @@ import { PageFrame } from '@/pages/PageFrame';
 export function DigestDetailPage() {
   const { id } = useParams();
   const { t } = useTranslation();
-  const { digest, viewState, errorKey, reload } = useDigestDetail(id);
+  const { digest, newerDigest, olderDigest, viewState, errorKey, reload } = useDigestDetail(id);
   const { isSaved, isMutating, toggleSave } = useSavedItems();
 
   return (
@@ -50,6 +50,8 @@ export function DigestDetailPage() {
         {viewState === 'ready' && digest ? (
           <DigestDetailView
             digest={digest}
+            newerDigest={newerDigest}
+            olderDigest={olderDigest}
             isSaved={isSaved}
             isMutating={isMutating}
             onToggleSave={(item) => {

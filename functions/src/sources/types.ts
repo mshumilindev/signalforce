@@ -8,6 +8,7 @@ export interface StaticSourceEntry {
   readonly citationUrl: string;
   readonly publishedAt: string;
   readonly externalId: string;
+  readonly imageUrl?: string;
 }
 
 export interface SourceDefinition {
@@ -26,6 +27,7 @@ export interface RawSourceItem {
   readonly citationUrl: string;
   readonly publishedAt: string | null;
   readonly externalId: string;
+  readonly imageUrl?: string;
 }
 
 export interface SourceFetchResult {

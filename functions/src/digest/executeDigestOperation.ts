@@ -46,6 +46,14 @@ export async function executeDigestOperation(
   } catch (error) {
     const httpsError = toHttpsError(error);
 
+    console.error('Digest operation failed', {
+      uid: input.uid,
+      type: input.type,
+      code: httpsError.code,
+      message: httpsError.message,
+      cause: error instanceof Error ? error.message : String(error),
+    });
+
     await failGenerationRun({
       uid: input.uid,
       runId,

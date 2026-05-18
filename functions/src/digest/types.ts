@@ -65,6 +65,9 @@ export interface DigestItem {
   readonly sourceLabel: string;
   readonly citationUrl: string;
   readonly addedAt: string;
+  readonly synopsis?: string;
+  readonly imageUrl?: string;
+  readonly imageAlt?: string;
 }
 
 export interface DigestSections {

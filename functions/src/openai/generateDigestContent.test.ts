@@ -103,7 +103,37 @@ describe('generateDigestContent', () => {
     });
 
     expect(enriched.summary).toContain('React');
-    expect(enriched.items).toEqual(digest.items);
+    expect(enriched.items[0]?.synopsis).toContain('React platform');
+    expect(enriched.items[0]?.imageAlt).toBe('React platform architecture visual');
     expect(enriched.reflectionPrompt.length).toBeGreaterThan(0);
+  });
+
+  it('falls back when OpenAI JSON validates incorrectly during enrichment', async () => {
+    const client = createMockClient(
+      JSON.stringify({
+        summary: 'Incomplete content',
+        sections: {
+          executiveSummary: 'Executive',
+          topSignals: ['Signal'],
+          signalVsNoise: [],
+          leadershipImplications: [],
+          aiOrchestrationImplications: [],
+          frontendArchitectureImplications: [],
+          recommendedAction: 'Act',
+        },
+        termOfDay: { term: 'Signal', explanation: 'A source-backed update.' },
+        reflectionPrompt: 'Reflect',
+      }),
+    );
+
+    const enriched = await enrichDigestWithGeneratedContent({
+      preferences,
+      digest,
+      client,
+      apiKey: 'test-key',
+    });
+
+    expect(enriched.summary).toContain('Source-backed digest prepared');
+    expect(enriched.items[0]?.synopsis).toContain('Fixture article');
   });
 });

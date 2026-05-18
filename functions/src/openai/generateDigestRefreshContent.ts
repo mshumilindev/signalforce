@@ -4,6 +4,7 @@ import { applyDigestContent } from './applyDigestContent.js';
 import { buildDigestRefreshPrompt } from './buildDigestRefreshPrompt.js';
 import { createOpenAiClient } from './client.js';
 import { DigestContentValidationError } from './errors.js';
+import { buildFallbackDigestContent, isOpenAiConnectionError } from './fallbackDigestContent.js';
 import { parseDigestContentJson } from './parseDigestContent.js';
 
 export interface GenerateDigestRefreshContentInput {
@@ -51,6 +52,23 @@ export async function generateDigestRefreshContent(input: GenerateDigestRefreshC
 export async function enrichRefreshedDigestContent(
   input: GenerateDigestRefreshContentInput,
 ): Promise<DigestDocument> {
-  const content = await generateDigestRefreshContent(input);
+  let content;
+
+  try {
+    content = await generateDigestRefreshContent(input);
+  } catch (error) {
+    if (!isOpenAiConnectionError(error) && !(error instanceof DigestContentValidationError)) {
+      throw error;
+    }
+
+    console.warn('OpenAI refresh content failed; using source-backed fallback refresh content.', {
+      digestId: input.digest.id,
+      newItemCount: input.newItems.length,
+      reason: error instanceof Error ? error.message : 'unknown',
+    });
+
+    content = buildFallbackDigestContent(input.digest, input.newItems);
+  }
+
   return applyDigestContent(input.digest, content);
 }

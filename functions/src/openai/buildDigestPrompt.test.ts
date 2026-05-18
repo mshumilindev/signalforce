@@ -53,6 +53,9 @@ describe('buildDigestPrompt', () => {
     expect(system).toContain('AI Orchestrator');
     expect(system).toContain('Lead AI Engineer');
     expect(system).toContain('Do not invent URLs');
+    expect(system).toContain('termOfDay is required');
+    expect(system).toContain('itemSynopses must include one object for every source item');
+    expect(system).toContain('itemVisuals must include one object for every source item');
     expect(user).toContain('Fixture article');
     expect(user).toContain('https://example.com/fixture-article');
   });

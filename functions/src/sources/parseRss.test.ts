@@ -9,6 +9,7 @@ const RSS_FIXTURE = `<?xml version="1.0"?>
       <link>https://example.com/fixture-post</link>
       <guid>fixture-post</guid>
       <pubDate>Sun, 18 May 2026 10:00:00 GMT</pubDate>
+      <media:thumbnail url="https://example.com/feed-image.jpg" />
     </item>
   </channel>
 </rss>`;
@@ -24,6 +25,7 @@ describe('parseRssFeedXml', () => {
       title: 'Fixture Post',
       citationUrl: 'https://example.com/fixture-post',
       externalId: 'fixture-post',
+      imageUrl: 'https://example.com/feed-image.jpg',
     });
     expect(items[0]?.publishedAt).toBeTruthy();
   });

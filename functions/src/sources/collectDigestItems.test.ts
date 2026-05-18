@@ -48,4 +48,17 @@ describe('collectDigestItems', () => {
     expect(sharedItems).toHaveLength(1);
     expect(sharedItems[0]?.title).toBe('Shared URL item duplicate');
   });
+
+  it('falls back to curated static items when no sources match preferences', async () => {
+    const { items } = await collectDigestItems({
+      preferences: {
+        ...preferences,
+        interests: ['security'],
+      },
+      referenceDate: new Date('2026-05-18T10:00:00.000Z'),
+    });
+
+    expect(items.length).toBeGreaterThan(0);
+    expect(items.some((item) => item.sourceId === 'signalforge-curated')).toBe(true);
+  });
 });

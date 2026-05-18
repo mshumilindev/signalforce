@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateNewDigest } from './lifecycle.js';
+import { generateNewDigest, resolveDigestLifecycle } from './lifecycle.js';
 import { refreshActiveDigestInPlace } from './refreshActiveDigestInPlace.js';
 import type { DigestItem } from './types.js';
 
@@ -40,5 +40,39 @@ describe('refreshActiveDigestInPlace', () => {
     expect(refreshed.periodEnd).toBe(digest.periodEnd);
     expect(appendedItems).toEqual([newItem]);
     expect(refreshed.refreshHistory.at(-1)?.type).toBe('refreshed');
+  });
+
+  it('does not create a new digest when yesterday digest is refreshed before expiry', () => {
+    const digest = {
+      ...generateNewDigest({
+        digestId: 'digest-1',
+        cadence,
+        referenceDate: new Date('2026-05-17T09:15:00.000Z'),
+      }),
+      periodStart: '2026-05-11T09:00:00.000Z',
+      periodEnd: '2026-05-18T09:00:00.000Z',
+      expiresAt: '2026-05-25T09:00:00.000Z',
+    };
+
+    const resolved = resolveDigestLifecycle({
+      activeDigest: digest,
+      cadence,
+      referenceDate: new Date('2026-05-18T12:00:00.000Z'),
+      newItems: [newItem],
+      force: false,
+      newDigestId: 'should-not-be-used',
+    });
+
+    expect(resolved.kind).toBe('refreshed');
+    if (resolved.kind !== 'refreshed') {
+      return;
+    }
+
+    expect(resolved.digest.id).toBe('digest-1');
+    expect(resolved.digest.generatedAt).toBe('2026-05-17T09:15:00.000Z');
+    expect(resolved.digest.periodStart).toBe('2026-05-11T09:00:00.000Z');
+    expect(resolved.digest.periodEnd).toBe('2026-05-18T09:00:00.000Z');
+    expect(resolved.digest.expiresAt).toBe('2026-05-25T09:00:00.000Z');
+    expect(resolved.digest.lastRefreshedAt).toBe('2026-05-18T12:00:00.000Z');
   });
 });

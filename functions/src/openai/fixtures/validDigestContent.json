@@ -9,6 +9,19 @@
     "frontendArchitectureImplications": ["Colocate data boundaries with route segments to reduce accidental coupling"],
     "recommendedAction": "Pick one production route to migrate behind a server boundary this sprint."
   },
+  "itemSynopses": [
+    {
+      "itemId": "item-1",
+      "synopsis": "A quick read on React platform direction and what it means for server/client boundaries."
+    }
+  ],
+  "itemVisuals": [
+    {
+      "itemId": "item-1",
+      "imageAlt": "React platform architecture visual",
+      "imageSearchQuery": "React server components architecture diagram"
+    }
+  ],
   "termOfDay": {
     "term": "Server Components",
     "explanation": "UI rendered on the server and streamed to the client without shipping component logic."

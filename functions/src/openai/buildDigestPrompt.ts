@@ -38,10 +38,16 @@ export function buildDigestPrompt(input: DigestPromptInput): DigestPromptMessage
     'Do not cite items that are not listed in the input.',
     `Write all user-facing strings in ${language}.`,
     `Tone: ${input.preferences.digestTone}. Role lenses (apply all together): ${formatRoleContextsForPrompt()}.`,
-    'JSON schema keys: summary, sections, termOfDay, reflectionPrompt.',
+    'JSON schema keys: summary, sections, itemSynopses, itemVisuals, termOfDay, reflectionPrompt.',
     'sections keys: executiveSummary, topSignals, signalVsNoise, leadershipImplications, aiOrchestrationImplications, frontendArchitectureImplications, recommendedAction.',
-    'topSignals must be an array of concise bullet strings referencing real themes from the items.',
-    'termOfDay may be null when no strong candidate exists.',
+    'itemSynopses must include one object for every source item: { "itemId": string, "synopsis": string }.',
+    'Each synopsis must be one short sentence under 220 characters that helps decide whether to open the source.',
+    'itemVisuals must include one object for every source item: { "itemId": string, "imageAlt": string, "imageSearchQuery": string }.',
+    'Use imageSearchQuery to describe the most relevant real-world visual to look up. Do not invent image URLs.',
+    'executiveSummary and recommendedAction are strings.',
+    'topSignals, signalVsNoise, leadershipImplications, aiOrchestrationImplications, and frontendArchitectureImplications must each be a JSON array of strings (never a single string).',
+    'topSignals must include at least one concise bullet referencing real themes from the items.',
+    'termOfDay is required. Pick one useful engineering, AI, frontend, architecture, or leadership term grounded in the source themes.',
   ].join('\n');
 
   const user = [

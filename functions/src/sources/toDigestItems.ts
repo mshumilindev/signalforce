@@ -18,5 +18,6 @@ export function toDigestItems(items: readonly RawSourceItem[], addedAt: Date): D
     sourceLabel: item.sourceLabel,
     citationUrl: item.citationUrl,
     addedAt: addedAtIso,
+    ...(item.imageUrl ? { imageUrl: item.imageUrl, imageAlt: item.title } : {}),
   }));
 }

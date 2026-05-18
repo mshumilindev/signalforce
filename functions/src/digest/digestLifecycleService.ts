@@ -49,10 +49,21 @@ function mapDigestGenerationError(error: unknown): never {
   throw error;
 }
 
+function assertDigestHasSourceItems(digest: DigestDocument): void {
+  if (digest.items.length === 0) {
+    throw new HttpsError(
+      'failed-precondition',
+      'At least one source item is required for digest generation.',
+    );
+  }
+}
+
 async function enrichCreatedDigestIfNeeded(
   digest: DigestDocument,
   preferences: UserPreferences,
 ): Promise<DigestDocument> {
+  assertDigestHasSourceItems(digest);
+
   try {
     return await enrichDigestWithGeneratedContent({ preferences, digest });
   } catch (error) {

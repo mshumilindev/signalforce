@@ -1,6 +1,8 @@
 import type { UserInterest, UserPreferences } from '../digest/types.js';
 import type { SourceDefinition } from './types.js';
 
+export const FALLBACK_SOURCE_ID = 'signalforge-curated';
+
 export const SOURCE_REGISTRY: readonly SourceDefinition[] = [
   {
     id: 'react-blog',
@@ -17,7 +19,7 @@ export const SOURCE_REGISTRY: readonly SourceDefinition[] = [
     interests: ['frontend', 'react'],
   },
   {
-    id: 'signalforge-curated',
+    id: FALLBACK_SOURCE_ID,
     label: 'SignalForge Curated',
     type: 'static',
     interests: ['architecture', 'leadership', 'ai', 'platform'],

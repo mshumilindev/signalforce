@@ -19,6 +19,10 @@ vi.mock('@/features/saved/useSavedItems', () => ({
   useSavedItems: () => mockUseSavedItems(),
 }));
 
+vi.mock('@/shared/firebase/sourcePreview', () => ({
+  checkSourcePreview: () => Promise.resolve({ available: true, reason: 'available' }),
+}));
+
 const sampleDigest = {
   id: 'digest-1',
   status: 'active' as const,
@@ -45,11 +49,22 @@ const sampleDigest = {
       sourceLabel: 'React Blog',
       citationUrl: 'https://example.com/article',
       addedAt: '2026-05-18T10:00:00.000Z',
+      synopsis: 'A short reason to decide whether this React source is worth opening.',
     },
   ],
   termOfDay: null,
   reflectionPrompt: 'Reflect on cadence',
   refreshHistory: [{ at: '2026-05-18T10:00:00.000Z', type: 'created' as const }],
+};
+
+const olderDigest = {
+  ...sampleDigest,
+  id: 'digest-0',
+  generatedAt: '2026-05-11T10:00:00.000Z',
+  lastRefreshedAt: '2026-05-11T10:00:00.000Z',
+  periodStart: '2026-05-04T09:00:00.000Z',
+  periodEnd: '2026-05-11T09:00:00.000Z',
+  expiresAt: '2026-05-18T09:00:00.000Z',
 };
 
 function renderDigestDetailPage() {
@@ -70,6 +85,8 @@ describe('DigestDetailPage', () => {
 
     mockUseDigestDetail.mockReturnValue({
       digest: sampleDigest,
+      newerDigest: null,
+      olderDigest,
       viewState: 'ready',
       errorKey: null,
       reload: vi.fn().mockResolvedValue(undefined),
@@ -91,6 +108,26 @@ describe('DigestDetailPage', () => {
 
     expect(screen.getByText('Digest summary')).toBeVisible();
     expect(screen.getByText('Fixture article')).toBeVisible();
+    expect(
+      screen.getByText('A short reason to decide whether this React source is worth opening.'),
+    ).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Previous digest' })).toHaveAttribute(
+      'href',
+      '/digests/digest-0',
+    );
+
+    expect(screen.getByRole('link', { name: 'Open original' })).toHaveAttribute(
+      'href',
+      'https://example.com/article',
+    );
+
+    await user.click(await screen.findByRole('button', { name: 'Read in app' }));
+
+    expect(screen.getByLabelText('In-app reader')).toBeVisible();
+    expect(screen.getByTitle('In-app reader: Fixture article')).toHaveAttribute(
+      'src',
+      'https://example.com/article',
+    );
 
     await user.click(screen.getByRole('button', { name: 'Save item' }));
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/features/auth/useAuth';
 import { getDigestFreshness, type DigestFreshness } from '@/features/dashboard/digestFreshness';
-import { getActiveDigest } from '@/features/digest/digestRepository';
+import { getActiveDigest, getDigestById } from '@/features/digest/digestRepository';
 import type { DigestDocument } from '@/features/digest/types';
 import {
   callForceUpdateDigest,
@@ -97,14 +97,22 @@ export function useDashboardDigest(): UseDashboardDigestResult {
 
       try {
         const result = force ? await callForceUpdateDigest() : await callRefreshDigest();
-        const activeDigest = await getActiveDigest(firebaseUser.uid);
 
-        setDigest(activeDigest);
-        setViewState(activeDigest ? 'ready' : 'empty');
         await refreshUserDocument();
-        setFeedbackKey(feedbackKeyForResult(result, force));
+
+        const loadedDigest =
+          (await getDigestById(firebaseUser.uid, result.digestId)) ??
+          (await getActiveDigest(firebaseUser.uid));
+
+        setDigest(loadedDigest);
+        setViewState(loadedDigest ? 'ready' : 'error');
+        setErrorKey(loadedDigest ? null : 'dashboard.errors.loadFailed');
+        setFeedbackKey(loadedDigest ? feedbackKeyForResult(result, force) : null);
       } catch (error) {
+        setDigest(null);
+        setViewState('error');
         setErrorKey(mapCallableErrorToTranslationKey(error));
+        setFeedbackKey(null);
       } finally {
         setIsRefreshing(false);
         setIsForcing(false);

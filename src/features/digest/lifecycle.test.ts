@@ -167,6 +167,35 @@ describe('resolveDigestLifecycle', () => {
     }
   });
 
+  it('keeps yesterday digest active when refreshed today before expiry', () => {
+    const active = createActiveDigest({
+      generatedAt: '2026-05-17T09:15:00.000Z',
+      lastRefreshedAt: '2026-05-17T09:15:00.000Z',
+      periodStart: '2026-05-11T09:00:00.000Z',
+      periodEnd: '2026-05-18T09:00:00.000Z',
+      expiresAt: '2026-05-25T09:00:00.000Z',
+    });
+
+    const outcome = resolveDigestLifecycle({
+      activeDigest: active,
+      cadence: weeklyCadence,
+      referenceDate: new Date('2026-05-18T12:00:00.000Z'),
+      newItems: [sampleItem],
+      force: false,
+      newDigestId: 'should-not-be-used',
+    });
+
+    expect(outcome.kind).toBe('refreshed');
+    if (outcome.kind === 'refreshed') {
+      expect(outcome.digest.id).toBe('digest-1');
+      expect(outcome.digest.generatedAt).toBe('2026-05-17T09:15:00.000Z');
+      expect(outcome.digest.periodStart).toBe('2026-05-11T09:00:00.000Z');
+      expect(outcome.digest.periodEnd).toBe('2026-05-18T09:00:00.000Z');
+      expect(outcome.digest.expiresAt).toBe('2026-05-25T09:00:00.000Z');
+      expect(outcome.digest.lastRefreshedAt).toBe('2026-05-18T12:00:00.000Z');
+    }
+  });
+
   it('creates a new digest when the active digest is expired', () => {
     const expired = createActiveDigest({ expiresAt: '2026-05-11T09:00:00.000Z' });
     const outcome = resolveDigestLifecycle({

@@ -5,6 +5,7 @@ import { DashboardShortcuts } from '@/features/dashboard/DashboardShortcuts';
 import { DashboardStatePanel } from '@/features/dashboard/DashboardStatePanel';
 import { ForceUpdateConfirmModal } from '@/features/dashboard/ForceUpdateConfirmModal';
 import { LatestDigestCard } from '@/features/dashboard/LatestDigestCard';
+import { TermOfDayPanel } from '@/features/dashboard/TermOfDayPanel';
 import { useDashboardDigest } from '@/features/dashboard/useDashboardDigest';
 import { PageFrame } from '@/pages/PageFrame';
 
@@ -78,12 +79,15 @@ export function DashboardPage() {
         ) : null}
 
         {showCard ? (
-          <LatestDigestCard
-            digest={digest}
-            freshness={freshness}
-            nextDigestDueAt={nextDigestDueAt}
-            isActionPending={isActionPending}
-          />
+          <>
+            <LatestDigestCard
+              digest={digest}
+              freshness={freshness}
+              nextDigestDueAt={nextDigestDueAt}
+              isActionPending={isActionPending}
+            />
+            <TermOfDayPanel termOfDay={digest.termOfDay} />
+          </>
         ) : null}
 
         {viewState !== 'loading' ? <DashboardShortcuts /> : null}
